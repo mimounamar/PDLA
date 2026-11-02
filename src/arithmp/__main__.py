@@ -8,19 +8,30 @@ from .parser import Parser, ParserException
 
 
 @click.command()
-@click.argument("filepath", type=click.Path(exists=True, path_type=Path))
-def main(filepath: Path) -> None:
+@click.option('-c', help='option to parse the following argument')
+@click.argument("filepath", type=click.Path(exists=True, path_type=Path), required=False)
+def main(c, filepath: Path) -> None:
     """
     Main entry point for the Arithmp command-line interface.
     """
     parser = Parser()
-    try:
-        if (result := parser.parse(filepath, filepath.read_text())) is not None:
-            click.echo(result)
-    except ParserException as e:
-        click.echo(
-            f"Error in script '{filepath}' at line {e.context.line} column {e.context.column} '{e.context.source}': {e}'"
-        )
+
+    if c:
+        try:
+            if (result := parser.parse(None, c)) is not None:
+                click.echo(result)
+        except ParserException as e:
+            click.echo(
+                f"Error while parsing the text {c}: {e}'"
+            )
+    else:
+        try:
+            if (result := parser.parse(filepath, filepath.read_text())) is not None:
+                click.echo(result)
+        except ParserException as e:
+            click.echo(
+                f"Error in script '{filepath}' at line {e.context.line} column {e.context.column} '{e.context.source}': {e}'"
+            )
 
 
 if __name__ == "__main__":
