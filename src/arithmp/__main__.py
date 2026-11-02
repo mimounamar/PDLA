@@ -10,7 +10,7 @@ from .parser import Parser, ParserException
 @click.command()
 @click.option('-c', help='option to parse the following argument')
 @click.argument("filepath", type=click.Path(exists=True, path_type=Path), required=False)
-def main(filepath: Path) -> None:
+def main(c, filepath: Path) -> None:
     """
     Main entry point for the Arithmp command-line interface.
     """
