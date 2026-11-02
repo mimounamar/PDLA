@@ -10,7 +10,7 @@ from .parser import Parser, ParserException
 @click.command()
 @click.option('-c', help='option to parse the following argument')
 @click.argument("filepath", type=click.Path(exists=True, path_type=Path), required=False)
-def main(c, filepath: Path) -> None:
+def main(filepath: Path) -> None:
     """
     Main entry point for the Arithmp command-line interface.
     """
@@ -24,6 +24,16 @@ def main(c, filepath: Path) -> None:
             click.echo(
                 f"Error while parsing the text {c}: {e}'"
             )
+    elif filepath == None:
+        while(True):
+            content = click.prompt("Please enter an expression", type=str)
+            try:
+                if (result := parser.parse(None, content)) is not None:
+                    click.echo(result)
+            except ParserException as e:
+                click.echo(
+                    f"Error in the expression '{content}': {e}'"
+                )
     else:
         try:
             if (result := parser.parse(filepath, filepath.read_text())) is not None:
