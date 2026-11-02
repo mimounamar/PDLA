@@ -8,13 +8,23 @@ from .parser import Parser, ParserException
 
 
 @click.command()
+@click.option('-c', help='option to parse the following argument')
 @click.argument("filepath", type=click.Path(exists=True, path_type=Path), required=False)
 def main(filepath: Path) -> None:
     """
     Main entry point for the Arithmp command-line interface.
     """
     parser = Parser()
-    if filepath == None:
+
+    if c:
+        try:
+            if (result := parser.parse(None, c)) is not None:
+                click.echo(result)
+        except ParserException as e:
+            click.echo(
+                f"Error while parsing the text {c}: {e}'"
+            )
+    elif filepath == None:
         while(True):
             content = click.prompt("Please enter an expression", type=str)
             try:
